@@ -1,0 +1,15 @@
+@
+# Rust
+target
+Cargo.lock
+
+# Tauri
+src-tauritarget
+
+# Node
+node_modules
+
+# OS
+.DS_Store
+Thumbs.db
+@  Out-File -FilePath .gitignore -Encoding utf8

@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RL Camera Path Editor</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Header with branding -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <img src="assets/banner_new.png" alt="RL Camera Path Editor" class="banner-logo">
+                    <div class="divider-line"></div>
+                    <img src="assets/logo.png" alt="Logo" class="app-logo">
+                </div>
+                <div class="header-info">
+                    <button class="btn btn-primary btn-header" id="btn-open">Open (Ctrl+O)</button>
+                    <button class="btn btn-primary btn-header" id="btn-save">Save (Ctrl+S)</button>
+                    <button class="btn btn-primary btn-header" id="btn-save-as">Save As</button>
+                    <span class="version">v2.0</span>
+                    <span class="by-michos">by michos</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Tab Navigation -->
+        <nav class="tab-navigation">
+            <button class="tab-btn active" data-tab="fov">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="icon icon-tabler icons-tabler-outline icon-tabler-eye">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+                    <path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" />
+                </svg>
+                FOV
+            </button>
+            <button class="tab-btn" data-tab="position">
+                <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                    <circle cx="12" cy="10" r="3"></circle>
+                </svg>
+                Position
+            </button>
+            <button class="tab-btn" data-tab="rotation">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="icon icon-tabler icons-tabler-outline icon-tabler-rotate-360">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M12 16h4v4" />
+                    <path
+                        d="M19.458 11.042c.86 -2.366 .722 -4.58 -.6 -5.9c-2.272 -2.274 -7.185 -1.045 -10.973 2.743c-3.788 3.788 -5.017 8.701 -2.744 10.974c2.227 2.226 6.987 1.093 10.74 -2.515" />
+                </svg>
+                Rotation
+            </button>
+            <button class="tab-btn" data-tab="time">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="icon icon-tabler icons-tabler-outline icon-tabler-clock">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+                    <path d="M12 7v5l3 3" />
+                </svg>
+                Time
+            </button>
+            <button class="tab-btn" data-tab="weight">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="icon icon-tabler icons-tabler-outline icon-tabler-weight">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M12 6m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
+                    <path
+                        d="M6.835 9h10.33a1 1 0 0 1 .984 .821l1.637 9a1 1 0 0 1 -.984 1.179h-13.604a1 1 0 0 1 -.984 -1.179l1.637 -9a1 1 0 0 1 .984 -.821z" />
+                </svg>
+                Weight
+            </button>
+            <button class="tab-btn" data-tab="mirror">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="icon icon-tabler icons-tabler-outline icon-tabler-flip-vertical">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M12 3l0 18" />
+                    <path d="M16 7l0 10l5 0l-5 -10" />
+                    <path d="M8 7l0 10l-5 0l5 -10" />
+                </svg>
+                Mirror
+            </button>
+            <button class="tab-btn" data-tab="rotate-path">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="icon icon-tabler icons-tabler-outline icon-tabler-rotate-3d">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M12 3a7 7 0 0 1 7 7v4l-3 -3" />
+                    <path d="M22 11l-3 3" />
+                    <path d="M8 15.5l-5 -3l5 -3l5 3v5.5l-5 3z" />
+                    <path d="M3 12.5v5.5l5 3" />
+                    <path d="M8 15.545l5 -3.03" />
+                </svg>
+                Rotate Path
+            </button>
+            <button class="tab-btn" data-tab="align">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"
+                    class="icon icon-tabler icons-tabler-filled icon-tabler-keyframe-align-center">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M12 19a1 1 0 0 1 .993 .883l.007 .117v2a1 1 0 0 1 -1.993 .117l-.007 -.117v-2a1 1 0 0 1 1 -1z" />
+                    <path
+                        d="M12 6c-.629 0 -1.214 .301 -1.606 .807l-2.908 3.748a2.395 2.395 0 0 0 -.011 2.876l2.919 3.762c.39 .505 .977 .807 1.606 .807c.629 0 1.214 -.301 1.606 -.807l2.908 -3.748a2.395 2.395 0 0 0 .011 -2.876l-2.919 -3.762a2.032 2.032 0 0 0 -1.606 -.807z" />
+                    <path d="M12 1a1 1 0 0 1 .993 .883l.007 .117v2a1 1 0 0 1 -1.993 .117l-.007 -.117v-2a1 1 0 0 1 1 -1z" />
+                    <path d="M5 11a1 1 0 0 1 .117 1.993l-.117 .007h-2a1 1 0 0 1 -.117 -1.993l.117 -.007h2z" />
+                    <path d="M21 11a1 1 0 0 1 .117 1.993l-.117 .007h-2a1 1 0 0 1 -.117 -1.993l.117 -.007h2z" />
+                </svg>
+                Align to Target
+            </button>
+            <button class="tab-btn" data-tab="advanced">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="icon icon-tabler icons-tabler-outline icon-tabler-circle-plus">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+                    <path d="M9 12h6" />
+                    <path d="M12 9v6" />
+                </svg>
+                Advanced
+            </button>
+            <button class="tab-btn" data-tab="visualize">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"
+                    class="icon icon-tabler icons-tabler-filled icon-tabler-badge-3d">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path
+                        d="M19 4a3 3 0 0 1 3 3v10a3 3 0 0 1 -3 3h-14a3 3 0 0 1 -3 -3v-10a3 3 0 0 1 3 -3zm-10.5 4h-1.5a1 1 0 1 0 0 2h1.5a.5 .5 0 0 1 .09 .992l-.09 .008h-.5c-1.287 0 -1.332 1.864 -.133 1.993l.133 .007h.5a.5 .5 0 1 1 0 1h-1.5a1 1 0 0 0 0 2h1.5a2.5 2.5 0 0 0 2.5 -2.5l-.005 -.164a2.5 2.5 0 0 0 -.477 -1.312l-.019 -.024l.019 -.024a2.5 2.5 0 0 0 -2.018 -3.976m6.5 0h-1a1 1 0 0 0 -1 1v6a1 1 0 0 0 1 1h1a3 3 0 0 0 3 -3v-2a3 3 0 0 0 -3 -3m0 2a1 1 0 0 1 1 1v2a1 1 0 0 1 -.883 .993l-.117 .007z" />
+                </svg>
+                Visualize
+            </button>
+            <button class="tab-btn" data-tab="credits">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="icon icon-tabler icons-tabler-outline icon-tabler-info-circle">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+                    <path d="M12 9h.01" />
+                    <path d="M11 12h1v4h1" />
+                </svg>
+                Credits
+            </button>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="content-area">
+            <!-- FOV Tab -->
+            <div class="tab-content active" id="fov">
+                <div class="content-header">
+                    <h2>FOV Controls</h2>
+                    <p class="subtitle">Adjust field of view for the entire camera path</p>
+                </div>
+                
+                <div class="control-section">
+                    <div class="control-group">
+                        <label>Add to FOV</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="fov-add-value" placeholder="0.0" class="modern-input" value="0">
+                            <span class="unit">degrees</span>
+                        </div>
+                        <p class="help-text">Adds specified value to all FOV values in the path</p>
+                        <button class="btn btn-primary" onclick="applyFOVAdd()">Apply Add</button>
+                    </div>
+
+                    <div class="control-group">
+                        <label>Multiply FOV</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="fov-multiply-value" placeholder="1.0" class="modern-input" value="1.0">
+                            <span class="unit">multiplier</span>
+                        </div>
+                        <p class="help-text">Multiplies all FOV values by this factor</p>
+                        <button class="btn btn-primary" onclick="applyFOVMultiply()">Apply Multiply</button>
+                    </div>
+
+                    <div class="control-group">
+                        <label>Set Constant FOV</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="fov-set-value" placeholder="90.0" class="modern-input" value="90">
+                            <span class="unit">degrees</span>
+                        </div>
+                        <p class="help-text">Sets all keyframes to the same FOV value</p>
+                        <button class="btn btn-primary" onclick="applyFOVSet()">Apply Set</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Position Tab -->
+            <div class="tab-content" id="position">
+                <div class="content-header">
+                    <h2>Position Controls</h2>
+                    <p class="subtitle">Transform camera position in 3D space</p>
+                </div>
+                
+                <div class="control-section">
+                    <h3>Position Offset</h3>
+                    <div class="xyz-grid">
+                        <div class="control-group">
+                            <label class="axis-label x-axis">X Offset</label>
+                            <input type="number" id="pos-offset-x" placeholder="0.0" class="modern-input" value="0">
+                        </div>
+                        <div class="control-group">
+                            <label class="axis-label y-axis">Y Offset</label>
+                            <input type="number" id="pos-offset-y" placeholder="0.0" class="modern-input" value="0">
+                        </div>
+                        <div class="control-group">
+                            <label class="axis-label z-axis">Z Offset</label>
+                            <input type="number" id="pos-offset-z" placeholder="0.0" class="modern-input" value="0">
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="applyPositionOffset()">Apply Position Offset</button>
+
+                    <div class="separator"></div>
+
+                    <h3>Position Scale</h3>
+                    
+                    <div class="control-group">
+                        <label style="display: flex; align-items: center; gap: 8px;">
+                            <input type="checkbox" id="scale-linked" onchange="toggleScaleMode(this.checked)">
+                            Use Linked Scale
+                        </label>
+                        <p class="help-text">Scale all axes uniformly</p>
+                    </div>
+                    
+                    <!-- Linked Scale (Hidden by default) -->
+                    <div id="scale-linked-controls" style="display: none;">
+                        <div class="control-group">
+                            <label>Scale (All Axes)</label>
+                            <input type="number" id="pos-scale-all" placeholder="1.0" class="modern-input" value="1.0" step="0.1">
+                        </div>
+                        <button class="btn btn-primary" onclick="applyPositionScaleLinked()">Apply Linked Scale</button>
+                    </div>
+                    
+                    <!-- Separate XYZ (Shown by default) -->
+                    <div id="scale-separate-controls">
+                        <div class="xyz-grid">
+                            <div class="control-group">
+                                <label class="axis-label x-axis">X Scale</label>
+                                <input type="number" id="pos-scale-x" placeholder="1.0" class="modern-input" value="1.0" step="0.1">
+                            </div>
+                            <div class="control-group">
+                                <label class="axis-label y-axis">Y Scale</label>
+                                <input type="number" id="pos-scale-y" placeholder="1.0" class="modern-input" value="1.0" step="0.1">
+                            </div>
+                            <div class="control-group">
+                                <label class="axis-label z-axis">Z Scale</label>
+                                <input type="number" id="pos-scale-z" placeholder="1.0" class="modern-input" value="1.0" step="0.1">
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" onclick="applyPositionScale()">Apply Position Scale</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rotation Tab -->
+            <div class="tab-content" id="rotation">
+                <div class="content-header">
+                    <h2>Rotation Controls</h2>
+                    <p class="subtitle">Adjust camera rotation using Unreal Engine units or degrees</p>
+                </div>
+                
+                <div class="control-section">
+                    <div class="toggle-group">
+                        <label>Rotation Units</label>
+                        <div class="toggle-switch">
+                            <button class="toggle-btn active" onclick="switchUnits(this, 'degrees')">Degrees</button>
+                            <button class="toggle-btn" onclick="switchUnits(this, 'unreal')">Unreal Units</button>
+                        </div>
+                    </div>
+
+                    <div class="xyz-grid">
+                        <div class="control-group">
+                            <label class="axis-label pitch">Pitch (Up/Down)</label>
+                            <input type="number" id="rot-pitch" placeholder="0" class="modern-input" value="0">
+                        </div>
+                        <div class="control-group">
+                            <label class="axis-label yaw">Yaw (Left/Right)</label>
+                            <input type="number" id="rot-yaw" placeholder="0" class="modern-input" value="0">
+                        </div>
+                        <div class="control-group">
+                            <label class="axis-label roll">Roll (Tilt)</label>
+                            <input type="number" id="rot-roll" placeholder="0" class="modern-input" value="0">
+                        </div>
+                    </div>
+
+                    <div class="info-box">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>
+                        <p>1 degree = 182.04 Unreal units. Values are automatically converted.</p>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="applyRotation()">Apply Rotation</button>
+                </div>
+            </div>
+
+            <!-- Credits Tab -->
+            <div class="tab-content" id="credits">
+                <div class="credits-container">
+                    <div class="credits-banner">
+                        <img src="assets/banner.png" alt="RL Camera Path Editor">
+                    </div>
+                    
+                    <div class="credits-version">Version 2.0 - December 2025</div>
+                    
+                    <div class="credits-description">
+                        <h3>Created by michos</h3>
+                        <p>A tool for Rocket League editing which makes transforming dollycam paths easy.</p>
+                        
+                        <div class="features-list">
+                            <h4>FEATURES:</h4>
+                            <ul>
+                                <li>• Adjustable FOV for the whole path</li>
+                                <li>• Path alignment to free camera</li>
+                                <li>• Custom mirror with rotation selection</li>
+                                <li>• Adjustable speed for paths</li>
+                                <li>• 3D visualization with stadium reference</li>
+                                <li>• Smoothing and Reversing</li>
+                            </ul>
+                        </div>
+
+                        <div class="license-info">
+                            <h4>LICENSE:</h4>
+                            <p>MIT License - Free to use and modify</p>
+                            <p class="copyright">Copyright © 2025 michos</p>
+                        </div>
+                    </div>
+
+                    <div class="patch-notes-section">
+                        <h3>PATCH NOTES</h3>
+                        
+                        <div class="patch-note">
+                            <div class="patch-header">
+                                <span class="patch-icon">▼</span>
+                                <span class="patch-title">VERSION 2.0 - December 2025</span>
+                            </div>
+                            <div class="patch-content">
+                                <div class="patch-category">
+                                    <h5>NEW FEATURES:</h5>
+                                    <ul>
+                                        <li>• Custom mirror with rotation selection (X/Y/Z axis control)</li>
+                                        <li>• Parallel goals mirror preset for cinematic effects</li>
+                                        <li>• X/Y/Z axis rotation system (Blender-style workflow)</li>
+                                        <li>• Frame/timestamp synchronization validation tool</li>
+                                        <li>• Enhanced speed controls with proper frame syncing</li>
+                                        <li>• Degree-based rotation controls (auto-converts to Unreal units)</li>
+                                        <li>• Path alignment to free camera positions</li>
+                                        <li>• 3D stadium visualization with FBX model support</li>
+                                    </ul>
+                                </div>
+
+                                <div class="patch-category">
+                                    <h5>FIXES:</h5>
+                                    <ul>
+                                        <li>• Critical: Frame/timestamp sync maintained during speed changes</li>
+                                        <li>• Critical: Time offset now preserves 30 FPS relationship</li>
+                                        <li>• Rotation values now properly convert between degrees and Unreal units</li>
+                                        <li>• Mirror operations now support custom rotation flipping</li>
+                                    </ul>
+                                </div>
+
+                                <div class="patch-category">
+                                    <h5>IMPROVEMENTS:</h5>
+                                    <ul>
+                                        <li>• Dark mode UI with professional color scheme</li>
+                                        <li>• 12 organized tabs for better workflow</li>
+                                        <li>• Enhanced tooltips and help text</li>
+                                        <li>• Better error handling and validation</li>
+                                        <li>• Improved file operations and backup system</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="social-links">
+                        <a href="#" class="social-btn" onclick="openExternal('https://michosu.com'); return false;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                            </svg>
+                            Website
+                        </a>
+                        <a href="#" class="social-btn" onclick="openExternal('https://x.com/micholusu'); return false;">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z">
+                                </path>
+                            </svg>
+                            Twitter/X
+                        </a>
+                        <a href="#" class="social-btn" onclick="openExternal('https://youtube.com/c/michos'); return false;">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z">
+                                </path>
+                            </svg>
+                            YouTube
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Placeholder tabs (Time, Weight, Mirror, etc.) -->
+            <div class="tab-content" id="time">
+                <div class="content-header">
+                    <h2>Time Controls</h2>
+                    <p class="subtitle">Adjust timing and speed of your camera path</p>
+                </div>
+                <div class="placeholder">
+                    <p>Time manipulation controls would go here</p>
+                </div>
+            </div>
+
+            <div class="tab-content" id="weight">
+                <div class="content-header">
+                    <h2>Weight Controls</h2>
+                    <p class="subtitle">Adjust interpolation weight values</p>
+                </div>
+                <div class="placeholder">
+                    <p>Weight controls would go here</p>
+                </div>
+            </div>
+
+            <div class="tab-content" id="mirror">
+                <div class="content-header">
+                    <h2>Mirror Controls</h2>
+                    <p class="subtitle">Mirror camera path with custom rotation options</p>
+                </div>
+                <div class="placeholder">
+                    <p>Mirror controls with presets would go here</p>
+                </div>
+            </div>
+
+            <div class="tab-content" id="rotate-path">
+                <div class="content-header">
+                    <h2>Rotate Path</h2>
+                    <p class="subtitle">Rotate entire camera path around axes</p>
+                </div>
+                <div class="placeholder">
+                    <p>Path rotation controls would go here</p>
+                </div>
+            </div>
+
+            <div class="tab-content" id="align">
+                <div class="content-header">
+                    <h2>Align to Target</h2>
+                    <p class="subtitle">Align path to free camera position</p>
+                </div>
+                <div class="placeholder">
+                    <p>Alignment controls would go here</p>
+                </div>
+            </div>
+
+            <div class="tab-content" id="advanced">
+                <div class="content-header">
+                    <h2>Advanced Operations</h2>
+                    <p class="subtitle">Smoothing, reversing, and validation tools</p>
+                </div>
+                <div class="placeholder">
+                    <p>Advanced tools would go here</p>
+                </div>
+            </div>
+
+            <div class="tab-content" id="visualize">
+                <div class="content-header">
+                    <h2>3D Visualization</h2>
+                    <p class="subtitle">Preview your camera path in 3D space</p>
+                </div>
+                <div class="placeholder">
+                    <p>3D visualization canvas would go here</p>
+                </div>
+            </div>
+        </main>
+
+        <!-- Status Bar -->
+        <footer class="status-bar">
+            <div class="status-item">
+                <span class="status-label">File:</span>
+                <span class="status-value" data-stat="file">No file loaded</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Keyframes:</span>
+                <span class="status-value" data-stat="keyframes">0</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Duration:</span>
+                <span class="status-value" data-stat="duration">0.00s</span>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Open links in external browser using invoke
+            async function openExternal(url) {
+                console.log('Opening:', url);
+                try {
+                    // Use the app.js invoke function
+                    await invoke('open_url', { url: url });
+                } catch (error) {
+                    console.error('Error opening URL:', error);
+                    window.open(url, '_blank');
+                }
+            }
+
+        // Toggle between linked and separate scale
+        function toggleScaleMode(isLinked) {
+            document.getElementById('scale-linked-controls').style.display = isLinked ? 'block' : 'none';
+            document.getElementById('scale-separate-controls').style.display = isLinked ? 'none' : 'block';
+        }
+
+        // Toggle rotation units
+            function switchUnits(button, unit) {
+                const parent = button.parentElement;
+                parent.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+                button.classList.add('active');
+        }
+
+        // Apply linked scale
+        async function applyPositionScaleLinked() {
+            const scale = parseFloat(document.getElementById('pos-scale-all').value) || 1.0;
+            // Set all three to same value
+            document.getElementById('pos-scale-x').value = scale;
+            document.getElementById('pos-scale-y').value = scale;
+            document.getElementById('pos-scale-z').value = scale;
+            // Call the regular scale function
+            applyPositionScale();
+        }
+
+        // Tab switching
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetTab = button.getAttribute('data-tab');
+
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+
+                    button.classList.add('active');
+                    document.getElementById(targetTab).classList.add('active');
+                });
+            });
+
+            // Patch notes collapse/expand
+            const patchHeaders = document.querySelectorAll('.patch-header');
+            patchHeaders.forEach(header => {
+                header.addEventListener('click', () => {
+                    const patchNote = header.parentElement;
+                    const content = patchNote.querySelector('.patch-content');
+                    const icon = header.querySelector('.patch-icon');
+
+                    if (content.style.display === 'none') {
+                        content.style.display = 'block';
+                        icon.textContent = '▼';
+                    } else {
+                        content.style.display = 'none';
+                        icon.textContent = '▶';
+                    }
+                });
+            });
+        });
+        </script>
+        <script src="app.js"></script>
+        </body>
+        </html>
